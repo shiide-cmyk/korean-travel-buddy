@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#173c35">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="旅韓国語">
+<link rel="manifest" href="manifest.webmanifest">
+<title>旅する韓国語</title>
+<style>
+:root{--ink:#1d302c;--muted:#71817c;--green:#173c35;--mint:#e7f1eb;--paper:#f7f8f4;--line:#e4e9e3;--coral:#e78b72;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;padding-bottom:calc(86px + env(safe-area-inset-bottom))}
+header{background:var(--green);color:white;padding:24px 20px 22px;border-radius:0 0 24px 24px}
+.eyebrow{font-size:11px;letter-spacing:.14em;opacity:.75}h1{font-size:25px;margin:7px 0 5px}header p{margin:0;font-size:13px;opacity:.83}
+main{max-width:680px;margin:auto;padding:18px 16px}.section-title{font-size:17px;margin:22px 2px 12px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:16px 0}
+.tab{border:1px solid var(--line);background:white;border-radius:13px;padding:11px 4px;font-size:12px;color:var(--ink);font-weight:650}
+.tab.active{background:var(--mint);border-color:#9ab9a8;color:var(--green)}
+.card{background:white;border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:12px;box-shadow:0 3px 14px #183b3510}
+.card-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px}
+.tag{background:var(--mint);color:var(--green);padding:5px 9px;border-radius:99px;font-weight:700}
+.kr{font-size:23px;line-height:1.55;font-weight:750;margin:15px 0 5px;letter-spacing:.01em}
+.kana{font-size:14px;color:#63766e;margin-bottom:9px}
+.jp{font-size:15px;font-weight:650;margin-bottom:15px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer}
+.btn{border:0;border-radius:12px;padding:11px 14px;background:var(--green);color:white;font-weight:650;font-size:13px}
+.btn.secondary{background:var(--mint);color:var(--green)}
+.btn.ghost{background:white;color:var(--green);border:1px solid var(--line)}
+.btn:disabled{opacity:.35}
+.wordbox{background:#f8faf7;border-radius:12px;padding:12px;margin-top:13px;font-size:13px;line-height:1.9}
+.wordbox strong{color:var(--green)}
+.small{font-size:12px;color:var(--muted);line-height:1.6}
+.progress{height:6px;background:#e8ede8;border-radius:99px;overflow:hidden;margin:9px 0 16px}.progress>i{display:block;height:100%;background:#75a88e;width:0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+select{border:1px solid var(--line);border-radius:10px;padding:9px;background:white;color:var(--ink);max-width:100%}
+.quiz-option{display:block;width:100%;text-align:left;padding:13px;border:1px solid var(--line);border-radius:12px;background:white;margin:8px 0;color:var(--ink)}
+.quiz-option.correct{border-color:#69a886;background:#eef7f0}.quiz-option.wrong{border-color:#d98a78;background:#fff2ee}
+.feedback{font-size:13px;font-weight:650;margin:10px 0}
+.scenario{font-size:14px;line-height:1.7;background:#f8faf7;padding:13px;border-radius:12px;margin:12px 0}
+footer{position:fixed;bottom:0;left:0;right:0;background:#ffffffed;backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;z-index:3}
+.nav{border:0;background:transparent;color:var(--muted);font-size:11px;padding:7px 13px;border-radius:12px}.nav.active{background:var(--mint);color:var(--green);font-weight:750}
+.hidden{display:none!important}.notice{font-size:11px;color:var(--muted);line-height:1.6;margin:12px 2px}
+@media(min-width:600px){header{padding:30px max(calc((100vw - 640px)/2),24px)}main{padding:24px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="eyebrow">KOREAN FOR YOUR TRIP</div>
+ <h1>旅する韓国語 🇰🇷</h1>
+ <p>買い物・カフェ・移動で、そのまま使えるひとこと。</p>
+</header>
+<main>
+ <section id="learn">
+  <div class="row"><h2 class="section-title">シーンからフレーズを探す</h2><span class="small">初心者向け</span></div>
+  <div class="tabs" id="categoryTabs"></div>
+  <div class="row small"><span id="count"></span><span id="savedCount">★ 0件保存</span></div>
+  <div class="progress"><i id="progressBar"></i></div>
+  <article class="card">
+   <div class="card-top"><span id="categoryLabel"></span><span class="tag" id="levelLabel">まずはこれ！</span></div>
+   <div class="kr" id="phraseKr"></div>
+   <div class="kana" id="phraseKana"></div>
+   <div class="jp" id="phraseJp"></div>
+   <div class="actions">
+    <button class="btn" id="speakBtn">🔊 韓国語を聞く</button>
+    <button class="btn secondary" id="saveBtn">☆ 保存する</button>
+    <button class="btn ghost" id="wordsBtn">単語の意味</button>
+   </div>
+   <div class="wordbox hidden" id="wordBox"></div>
+  </article>
+  <div class="row"><button class="btn ghost" id="prevBtn">← 前へ</button><button class="btn" id="nextBtn">次のフレーズ →</button></div>
+  <p class="notice">発音はカタカナで近い音を示しています。実際の音は韓国語音声で確認してね。</p>
+ </section>
+ <section id="practice" class="hidden">
+  <h2 class="section-title">会話シミュレーション</h2>
+  <p class="small">場面を選んで、お店の人とのやりとりを練習しよう。</p>
+  <div class="row"><label for="scenarioSelect">練習する場面</label><select id="scenarioSelect"></select></div>
+  <div class="card" style="margin-top:14px">
+   <div class="card-top"><span class="tag">お店の人</span><span id="turnCount"></span></div>
+   <div class="scenario" id="dialoguePrompt"></div>
+   <div id="answerOptions"></div>
+   <div class="feedback" id="practiceFeedback"></div>
+   <button class="btn secondary hidden" id="continueBtn">次へ進む →</button>
+   <button class="btn ghost hidden" id="restartBtn">もう一度練習</button>
+  </div>
+  <p class="notice">まずは意味を選ぶ練習です。慣れたら、声に出してから答えを選んでみよう。</p>
+ </section>
+ <section id="saved" class="hidden">
+  <h2 class="section-title">保存したフレーズ ★</h2><div id="savedList"></div>
+ </section>
+ <section id="quiz" class="hidden">
+  <h2 class="section-title">ミニ確認テスト</h2>
+  <div class="card"><div class="card-top"><span class="tag">日本語から韓国語</span><span id="quizScore">0問正解</span></div>
+   <p class="small">この日本語を韓国語で言うと？</p><div class="jp" id="quizQuestion"></div><div id="quizOptions"></div><div class="feedback" id="quizFeedback"></div><button class="btn hidden" id="quizNext">次の問題 →</button>
+  </div>
+ </section>
+</main>
+<footer>
+ <button class="nav active" data-page="learn">📖 フレーズ</button>
+ <button class="nav" data-page="practice">💬 会話練習</button>
+ <button class="nav" data-page="quiz">✍️ テスト</button>
+ <button class="nav" data-page="saved">★ 保存</button>
+</footer>
+<script>
+const data=[
+{id:"s1",cat:"shopping",kr:"이거 얼마예요?",kana:"イゴ オルマエヨ？",jp:"これはいくらですか？",words:[["이거","これ"],["얼마","いくら"],["예요?","ですか？"]]},
+{id:"s2",cat:"shopping",kr:"다른 색상 있어요?",kana:"タルン セクサン イッソヨ？",jp:"ほかの色はありますか？",words:[["다른","ほかの"],["색상","色"],["있어요?","ありますか？"]]},
+{id:"s3",cat:"shopping",kr:"입어 봐도 돼요?",kana:"イボ バド ドェヨ？",jp:"試着してもいいですか？",words:[["입어 보다","着てみる"],["-아/어도 돼요?","してもいいですか？"]]},
+{id:"s4",cat:"shopping",kr:"조금 더 작은 사이즈 있어요?",kana:"チョグム ト チャグン サイジュ イッソヨ？",jp:"もう少し小さいサイズはありますか？",words:[["조금 더","もう少し"],["작은","小さい"],["사이즈","サイズ"],["있어요?","ありますか？"]]},
+{id:"s5",cat:"shopping",kr:"이거 하나 주세요.",kana:"イゴ ハナ ジュセヨ",jp:"これを1つください。",words:[["이거","これ"],["하나","1つ"],["주세요","ください"]]},
+{id:"s6",cat:"shopping",kr:"면세 돼요?",kana:"ミョンセ ドェヨ？",jp:"免税できますか？",words:[["면세","免税"],["돼요?","できますか？"]]},
+{id:"c1",cat:"cafe",kr:"아이스 아메리카노 한 잔 주세요.",kana:"アイス アメリカノ ハン ジャン ジュセヨ",jp:"アイスアメリカーノを1杯ください。",words:[["아이스","アイス"],["한 잔","1杯"],["주세요","ください"]]},
+{id:"c2",cat:"cafe",kr:"여기서 먹고 갈게요.",kana:"ヨギソ モッコ カルケヨ",jp:"ここで食べていきます。",words:[["여기서","ここで"],["먹고 가다","食べていく"],["-ㄹ게요","〜しますね"]]},
+{id:"c3",cat:"cafe",kr:"포장해 주세요.",kana:"ポジャンヘ ジュセヨ",jp:"持ち帰りにしてください。",words:[["포장","包装・持ち帰り"],["해 주세요","してください"]]},
+{id:"c4",cat:"cafe",kr:"카드로 결제할게요.",kana:"カドゥロ キョルジェハルケヨ",jp:"カードで支払います。",words:[["카드로","カードで"],["결제하다","決済する"],["-ㄹ게요","〜します"]]},
+{id:"c5",cat:"cafe",kr:"물 좀 주세요.",kana:"ムル チョム ジュセヨ",jp:"お水をください。",words:[["물","水"],["좀","ちょっと（依頼を柔らかく）"],["주세요","ください"]]},
+{id:"t1",cat:"transport",kr:"여기까지 택시로 얼마나 걸려요?",kana:"ヨギカジ テクシロ オルマナ コルリョヨ？",jp:"ここまでタクシーでどれくらいかかりますか？",words:[["여기까지","ここまで"],["택시로","タクシーで"],["얼마나","どれくらい"],["걸려요?","かかりますか？"]]},
+{id:"t2",cat:"transport",kr:"여기서 내려 주세요.",kana:"ヨギソ ネリョ ジュセヨ",jp:"ここで降ろしてください。",words:[["여기서","ここで"],["내리다","降りる"],["내려 주세요","降ろしてください"]]},
+{id:"t3",cat:"transport",kr:"이 역에서 내리면 돼요?",kana:"イ ヨゲソ ネリミョン ドェヨ？",jp:"この駅で降りればいいですか？",words:[["이 역","この駅"],["내리면","降りれば"],["돼요?","いいですか？"]]},
+{id:"h1",cat:"hotel",kr:"예약했어요. 이름은 ○○예요.",kana:"イェヤケッソヨ。イルムン ○○エヨ",jp:"予約しています。名前は○○です。",words:[["예약했어요","予約しました"],["이름은","名前は"],["예요","です"]]},
+{id:"h2",cat:"hotel",kr:"체크아웃은 몇 시예요?",kana:"チェックアウスン ミョッ シエヨ？",jp:"チェックアウトは何時ですか？",words:[["체크아웃","チェックアウト"],["몇 시","何時"],["예요?","ですか？"]]},
+{id:"h3",cat:"hotel",kr:"짐을 맡길 수 있어요?",kana:"チムル マッキル ス イッソヨ？",jp:"荷物を預けられますか？",words:[["짐","荷物"],["맡기다","預ける"],["-ㄹ 수 있어요?","できますか？"]]}
+];
+const cats=[["shopping","🛍️ 買い物"],["cafe","☕ カフェ"],["transport","🚕 交通"],["hotel","🏨 ホテル"]];
+const scenarios=[
+{title:"コスメショップ",turns:[
+{q:"店員：찾으시는 거 있으세요?（お探しのものはありますか？）",opts:["네, 이 제품 어디 있어요?","아이스 아메리카노 주세요.","여기서 내려 주세요."],correct:0,why:"はい、この商品はどこにありますか？"},
+{q:"店員：어떤 색상 찾으세요?（どの色をお探しですか？）",opts:["이 색상 보여 주세요.","체크아웃은 몇 시예요?","물 좀 주세요."],correct:0,why:"この色を見せてください。"},
+{q:"店員：더 필요한 거 있으세요?（ほかに必要なものは？）",opts:["아니요, 괜찮아요.","택시 불러 주세요.","포장해 주세요."],correct:0,why:"いいえ、大丈夫です。"}
+]},
+{title:"カフェで注文",turns:[
+{q:"店員：주문하시겠어요?（ご注文なさいますか？）",opts:["아이스 아메리카노 한 잔 주세요.","짐을 맡길 수 있어요?","다른 색상 있어요?"],correct:0,why:"アイスアメリカーノを1杯ください。"},
+{q:"店員：드시고 가세요?（店内で召し上がりますか？）",opts:["네, 여기서 먹고 갈게요.","이거 얼마예요?","여기서 내려 주세요."],correct:0,why:"はい、ここで食べていきます。"},
+{q:"店員：더 필요한 건 없으세요?（ほかにご注文は？）",opts:["물 좀 주세요.","체크아웃은 몇 시예요?","입어 봐도 돼요?"],correct:0,why:"お水をください。"}
+]},
+{title:"タクシー",turns:[
+{q:"運転手：어디로 가세요?（どちらへ行きますか？）",opts:["명동으로 가 주세요.","카드로 결제할게요.","다른 색상 있어요?"],correct:0,why:"明洞までお願いします。"},
+{q:"運転手：여기 맞으세요?（ここで合っていますか？）",opts:["네, 여기서 내려 주세요.","포장해 주세요.","한 잔 주세요."],correct:0,why:"はい、ここで降ろしてください。"}
+]},
+{title:"ホテルのチェックイン",turns:[
+{q:"スタッフ：예약하셨어요?（ご予約されていますか？）",opts:["네, 예약했어요. 이름은 ○○예요.","면세 돼요?","물 좀 주세요."],correct:0,why:"はい、予約しています。名前は○○です。"},
+{q:"スタッフ：짐 맡아 드릴까요?（お荷物をお預かりしましょうか？）",opts:["네, 부탁드려요.","이거 하나 주세요.","아이스로 주세요."],correct:0,why:"はい、お願いします。"}
+]}
+];
+let cat="shopping",idx=0,page="learn",saved=JSON.parse(localStorage.getItem("savedKorean")||"[]"),turn=0,scenario=0,score=0,quizIndex=0,quizAnswered=false;
+const $=id=>document.getElementById(id);
+function list(){return data.filter(x=>x.cat===cat)}
+function renderPhrase(){let a=list()[idx];$("count").textContent=`${idx+1} / ${list().length} フレーズ`;$("progressBar").style.width=((idx+1)/list().length*100)+"%";$("categoryLabel").textContent=cats.find(x=>x[0]===cat)[1];$("phraseKr").textContent=a.kr;$("phraseKana").textContent=a.kana;$("phraseJp").textContent=a.jp;$("wordBox").classList.add("hidden");$("wordBox").innerHTML=a.words.map(w=>`<div><strong>${w[0]}</strong> ：${w[1]}</div>`).join("");$("saveBtn").textContent=saved.includes(a.id)?"★ 保存済み":"☆ 保存する";$("savedCount").textContent=`★ ${saved.length}件保存`;$("prevBtn").disabled=idx===0;$("nextBtn").disabled=idx===list().length-1}
+function renderCats(){$("categoryTabs").innerHTML=cats.map(c=>`<button class="tab ${cat===c[0]?"active":""}" data-cat="${c[0]}">${c[1]}</button>`).join("");document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{cat=b.dataset.cat;idx=0;renderCats();renderPhrase()})}
+function speak(text){if(!("speechSynthesis"in window)){alert("この端末では音声読み上げに対応していません。");return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.lang="ko-KR";u.rate=.82;let voices=speechSynthesis.getVoices();let v=voices.find(x=>x.lang.toLowerCase().startsWith("ko"));if(v)u.voice=v;speechSynthesis.speak(u)}
+$("speakBtn").onclick=()=>speak(list()[idx].kr);$("wordsBtn").onclick=()=>$("wordBox").classList.toggle("hidden");
+$("saveBtn").onclick=()=>{let id=list()[idx].id;saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];localStorage.setItem("savedKorean",JSON.stringify(saved));renderPhrase()};
+$("prevBtn").onclick=()=>{idx=Math.max(0,idx-1);renderPhrase()};$("nextBtn").onclick=()=>{idx=Math.min(list().length-1,idx+1);renderPhrase()};
+function showPage(p){page=p;["learn","practice","saved","quiz"].forEach(x=>$(x).classList.toggle("hidden",x!==p));document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===p));if(p==="saved")renderSaved();if(p==="quiz")renderQuiz()}
+document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+function renderSaved(){let items=data.filter(x=>saved.includes(x.id));$("savedList").innerHTML=items.length?items.map(a=>`<article class="card"><div class="kr" style="font-size:20px">${a.kr}</div><div class="kana">${a.kana}</div><div class="jp">${a.jp}</div><button class="btn secondary" data-speak="${a.id}">🔊 聞く</button> <button class="btn ghost" data-remove="${a.id}">削除</button></article>`).join(""):'<p class="small">まだ保存したフレーズはありません。気に入った表現を☆で保存してね。</p>';document.querySelectorAll("[data-speak]").forEach(b=>b.onclick=()=>speak(data.find(x=>x.id===b.dataset.speak).kr));document.querySelectorAll("[data-remove]").forEach(b=>b.onclick=()=>{saved=saved.filter(x=>x!==b.dataset.remove);localStorage.setItem("savedKorean",JSON.stringify(saved));renderSaved()})}
+function setupPractice(){$("scenarioSelect").innerHTML=scenarios.map((s,i)=>`<option value="${i}">${s.title}</option>`).join("");$("scenarioSelect").onchange=()=>{scenario=+$("scenarioSelect").value;turn=0;renderTurn()};$("continueBtn").onclick=()=>{turn++;renderTurn()};$("restartBtn").onclick=()=>{turn=0;renderTurn()};renderTurn()}
+function renderTurn(){let s=scenarios[scenario];$("turnCount").textContent=`${Math.min(turn+1,s.turns.length)} / ${s.turns.length}`;if(turn>=s.turns.length){$("dialoguePrompt").textContent="すばらしい！この場面の会話はクリアです。";$("answerOptions").innerHTML="";$("practiceFeedback").textContent="旅行先でも落ち着いて使ってみよう。";$("continueBtn").classList.add("hidden");$("restartBtn").classList.remove("hidden");return}let t=s.turns[turn];$("dialoguePrompt").textContent=t.q;$("practiceFeedback").textContent="";$("continueBtn").classList.add("hidden");$("restartBtn").classList.add("hidden");$("answerOptions").innerHTML=t.opts.map((o,i)=>`<button class="quiz-option" data-answer="${i}">${o}</button>`).join("");document.querySelectorAll("[data-answer]").forEach(b=>b.onclick=()=>{let n=+b.dataset.answer;document.querySelectorAll("[data-answer]").forEach(x=>x.disabled=true);b.classList.add(n===t.correct?"correct":"wrong");if(n!==t.correct)document.querySelector(`[data-answer="${t.correct}"]`).classList.add("correct");$("practiceFeedback").textContent=(n===t.correct?"正解！ ":"もう一度覚えよう。 ")+t.why;$("continueBtn").classList.remove("hidden")})}
+function renderQuiz(){let pool=data;let a=pool[(quizIndex*7+3)%pool.length];$("quizQuestion").textContent=a.jp;$("quizScore").textContent=`${score}問正解`;$("quizFeedback").textContent="";$("quizNext").classList.add("hidden");let opts=[a,...pool.filter(x=>x.id!==a.id).sort((x,y)=>x.id.localeCompare(y.id)).slice(0,3)].sort((x,y)=>((x.id.charCodeAt(1)*13+quizIndex*7)%17)-((y.id.charCodeAt(1)*13+quizIndex*7)%17));$("quizOptions").innerHTML=opts.map(x=>`<button class="quiz-option" data-q="${x.id}">${x.kr}</button>`).join("");document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-q]").forEach(x=>x.disabled=true);let ok=b.dataset.q===a.id;b.classList.add(ok?"correct":"wrong");if(ok)score++;else document.querySelector(`[data-q="${a.id}"]`).classList.add("correct");$("quizScore").textContent=`${score}問正解`;$("quizFeedback").textContent=ok?"正解！":"正解はこちら。声に出して覚えよう。";$("quizNext").classList.remove("hidden")})}
+$("quizNext").onclick=()=>{quizIndex++;renderQuiz()};
+renderCats();renderPhrase();setupPractice();
+if("serviceWorker"in navigator && location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+</script>
+</body></html>

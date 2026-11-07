@@ -1,0 +1,10 @@
+{
+  "name": "旅する韓国語 - Korean Travel Buddy",
+  "short_name": "旅韓国語",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f7f8f4",
+  "theme_color": "#173c35",
+  "lang": "ja",
+  "description": "旅行・買い物で使える初心者向け韓国語フレーズ学習アプリ"
+}
