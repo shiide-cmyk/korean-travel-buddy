@@ -44,6 +44,9 @@ footer{position:fixed;bottom:0;left:0;right:0;background:#ffffffed;backdrop-filt
 .nav{border:0;background:transparent;color:var(--muted);font-size:11px;padding:7px 13px;border-radius:12px}.nav.active{background:var(--mint);color:var(--green);font-weight:750}
 .hidden{display:none!important}.notice{font-size:11px;color:var(--muted);line-height:1.6;margin:12px 2px}
 @media(min-width:600px){header{padding:30px max(calc((100vw - 640px)/2),24px)}main{padding:24px}}
+
+.manage-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.manage-tabs button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:9px;font-size:12px}.manage-tabs button.active{background:var(--mint);color:var(--green);font-weight:700}
+.field{display:block;margin:12px 0;font-size:13px;font-weight:650}.field input,.field textarea,.field select{display:block;margin-top:5px;width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;background:white;color:var(--ink);font:inherit;font-weight:400}.field textarea{min-height:88px;resize:vertical}.manage-item{padding:13px 0;border-bottom:1px solid var(--line)}.manage-item p{margin:5px 0 10px;font-size:13px}.manage-item .actions{margin-top:8px}
 </style>
 </head>
 <body>
@@ -96,12 +99,38 @@ footer{position:fixed;bottom:0;left:0;right:0;background:#ffffffed;backdrop-filt
    <p class="small">この日本語を韓国語で言うと？</p><div class="jp" id="quizQuestion"></div><div id="quizOptions"></div><div class="feedback" id="quizFeedback"></div><button class="btn hidden" id="quizNext">次の問題 →</button>
   </div>
  </section>
+ <section id="manage" class="hidden">
+  <h2 class="section-title">教材を追加・編集</h2><p class="small">自分で追加する／ChatGPTの教材を取り込む、両方に対応。</p>
+  <div class="manage-tabs" id="manageTabs"><button data-mtab="phrases" class="active">フレーズ</button><button data-mtab="dialogues">会話練習</button><button data-mtab="import">一括取り込み</button><button data-mtab="backup">バックアップ</button></div>
+  <div class="card m-panel" id="m-phrases">
+   <h3>単語・フレーズを追加</h3>
+   <label class="field">ジャンル<select id="mCat"><option value="shopping">買い物・コスメ・洋服</option><option value="cafe">カフェ・飲食</option><option value="transport">交通・タクシー</option><option value="hotel">ホテル</option></select></label>
+   <label class="field">韓国語<input id="mKr" placeholder="이거 추천해 주세요."></label>
+   <label class="field">カタカナ発音<input id="mKana" placeholder="イゴ チュチョネ ジュセヨ"></label>
+   <label class="field">日本語訳<input id="mJp" placeholder="これをおすすめしてください"></label>
+   <label class="field">単語ごとの意味（1行に1つ：韓国語＝日本語）<textarea id="mWords" placeholder="이거＝これ&#10;추천하다＝おすすめする&#10;주세요＝ください"></textarea></label>
+   <div class="actions"><button class="btn" id="mSavePhrase">フレーズを保存</button><button class="btn ghost hidden" id="mCancelPhrase">編集をやめる</button></div>
+  </div>
+  <div class="card m-panel hidden" id="m-dialogues"><h3>会話練習を追加</h3>
+   <p class="small">1つの会話に複数のやり取りを登録できます。返答候補は1行に1つ書いてね。</p>
+   <label class="field">タイトル<input id="mTitle" placeholder="コスメ店で美容液を探す"></label>
+   <label class="field">店員・相手のセリフ<textarea id="mQuestion" placeholder="어떤 제품 찾으세요?（何をお探しですか？）"></textarea></label>
+   <label class="field">返答候補（2～4行）<textarea id="mOptions" placeholder="수분크림 찾고 있어요.&#10;아메리카노 주세요."></textarea></label>
+   <label class="field">正解の番号<select id="mCorrect"><option value="0">1番目</option><option value="1">2番目</option><option value="2">3番目</option><option value="3">4番目</option></select></label>
+   <label class="field">正解の日本語訳<input id="mWhy" placeholder="保湿クリームを探しています"></label>
+   <div class="actions"><button class="btn secondary" id="mAddTurn">このやり取りを追加</button><button class="btn" id="mSaveDialogue">会話全体を保存</button><button class="btn ghost" id="mResetDialogue">入力をリセット</button></div><p class="small" id="mTurnCount">0件のやり取り</p>
+  </div>
+  <div class="card m-panel hidden" id="m-import"><h3>ChatGPTからまとめて取り込む</h3><p class="small">ChatGPTに「旅する韓国語 v2用のJSON教材を作って」と依頼し、生成されたJSONをここに貼り付けてね。</p><label class="field">教材JSON<textarea id="mJson" style="min-height:180px" placeholder='{"phrases":[],"scenarios":[]}'></textarea></label><button class="btn" id="mImport">内容を確認して取り込む</button><p class="small">同じIDを持つ教材は重複登録しません。取り込み前に形式を検証します。</p></div>
+  <div class="card m-panel hidden" id="m-backup"><h3>教材のバックアップ</h3><p class="small">追加教材はこの端末のブラウザ内に保存されます。PCとiPhoneでは自動同期されません。</p><div class="actions"><button class="btn" id="mExport">JSONを保存</button><label class="btn secondary" style="cursor:pointer">JSONファイルを読み込む<input type="file" accept=".json,application/json" id="mFile" style="display:none"></label></div><p class="small">機種変更やブラウザデータ削除に備えて、定期的にバックアップしてください。</p></div>
+  <div class="card"><h3>自分で追加した教材</h3><div id="mItems"></div></div>
+ </section>
 </main>
 <footer>
  <button class="nav active" data-page="learn">📖 フレーズ</button>
  <button class="nav" data-page="practice">💬 会話練習</button>
  <button class="nav" data-page="quiz">✍️ テスト</button>
  <button class="nav" data-page="saved">★ 保存</button>
+ <button class="nav" data-page="manage">＋ 教材</button>
 </footer>
 <script>
 const data=[
@@ -153,7 +182,7 @@ function speak(text){if(!("speechSynthesis"in window)){alert("この端末では
 $("speakBtn").onclick=()=>speak(list()[idx].kr);$("wordsBtn").onclick=()=>$("wordBox").classList.toggle("hidden");
 $("saveBtn").onclick=()=>{let id=list()[idx].id;saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];localStorage.setItem("savedKorean",JSON.stringify(saved));renderPhrase()};
 $("prevBtn").onclick=()=>{idx=Math.max(0,idx-1);renderPhrase()};$("nextBtn").onclick=()=>{idx=Math.min(list().length-1,idx+1);renderPhrase()};
-function showPage(p){page=p;["learn","practice","saved","quiz"].forEach(x=>$(x).classList.toggle("hidden",x!==p));document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===p));if(p==="saved")renderSaved();if(p==="quiz")renderQuiz()}
+function showPage(p){page=p;["learn","practice","saved","quiz","manage"].forEach(x=>$(x).classList.toggle("hidden",x!==p));document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===p));if(p==="saved")renderSaved();if(p==="quiz")renderQuiz()}
 document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
 function renderSaved(){let items=data.filter(x=>saved.includes(x.id));$("savedList").innerHTML=items.length?items.map(a=>`<article class="card"><div class="kr" style="font-size:20px">${a.kr}</div><div class="kana">${a.kana}</div><div class="jp">${a.jp}</div><button class="btn secondary" data-speak="${a.id}">🔊 聞く</button> <button class="btn ghost" data-remove="${a.id}">削除</button></article>`).join(""):'<p class="small">まだ保存したフレーズはありません。気に入った表現を☆で保存してね。</p>';document.querySelectorAll("[data-speak]").forEach(b=>b.onclick=()=>speak(data.find(x=>x.id===b.dataset.speak).kr));document.querySelectorAll("[data-remove]").forEach(b=>b.onclick=()=>{saved=saved.filter(x=>x!==b.dataset.remove);localStorage.setItem("savedKorean",JSON.stringify(saved));renderSaved()})}
 function setupPractice(){$("scenarioSelect").innerHTML=scenarios.map((s,i)=>`<option value="${i}">${s.title}</option>`).join("");$("scenarioSelect").onchange=()=>{scenario=+$("scenarioSelect").value;turn=0;renderTurn()};$("continueBtn").onclick=()=>{turn++;renderTurn()};$("restartBtn").onclick=()=>{turn=0;renderTurn()};renderTurn()}
@@ -162,5 +191,51 @@ function renderQuiz(){let pool=data;let a=pool[(quizIndex*7+3)%pool.length];$("q
 $("quizNext").onclick=()=>{quizIndex++;renderQuiz()};
 renderCats();renderPhrase();setupPractice();
 if("serviceWorker"in navigator && location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+</script>
+
+<script>
+(function(){
+"use strict";
+const keyP='ktb-v2-phrases',keyS='ktb-v2-scenarios';
+const el=id=>document.getElementById(id);
+const safeParse=(k)=>{try{const v=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(v)?v:[]}catch{return []}};
+let addedP=safeParse(keyP),addedS=safeParse(keyS),editId=null,draftTurns=[],editScenarioId=null;
+const uid=()=> 'user-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9);
+function persist(){localStorage.setItem(keyP,JSON.stringify(addedP));localStorage.setItem(keyS,JSON.stringify(addedS))}
+function sync(){
+  // Core arrays are the same arrays used by the original learning and practice screens.
+  for(let i=data.length-1;i>=0;i--)if(String(data[i].id).startsWith('user-'))data.splice(i,1);
+  data.push(...addedP);
+  for(let i=scenarios.length-1;i>=0;i--)if(String(scenarios[i].customId||'').startsWith('user-'))scenarios.splice(i,1);
+  scenarios.push(...addedS);
+  if(idx>=list().length)idx=Math.max(0,list().length-1);
+  renderPhrase();setupPractice();renderItems();
+}
+function wordsFromText(t){return t.split('\n').map(x=>x.trim()).filter(Boolean).map(x=>{const i=x.search(/[＝=:：]/);return i<0?[x,'']:[x.slice(0,i).trim(),x.slice(i+1).trim()]})}
+function validatePhrase(x){if(!x||typeof x!=='object'||!['shopping','cafe','transport','hotel'].includes(x.cat)||!['kr','kana','jp'].every(k=>typeof x[k]==='string'&&x[k].trim())||!Array.isArray(x.words||[]))throw Error('フレーズのジャンル・韓国語・カタカナ・日本語・単語の意味を確認してね');return {id:typeof x.id==='string'&&x.id.startsWith('user-')?x.id:uid(),cat:x.cat,kr:x.kr.trim(),kana:x.kana.trim(),jp:x.jp.trim(),words:(x.words||[]).map(w=>{if(!Array.isArray(w)||w.length!==2||!w.every(v=>typeof v==='string'))throw Error('wordsは ["韓国語","日本語"] の配列にしてね');return w})}}
+function validateScenario(x){if(!x||typeof x.title!=='string'||!x.title.trim()||!Array.isArray(x.turns)||!x.turns.length)throw Error('会話にはタイトルと1つ以上のやり取りが必要です');const turns=x.turns.map(t=>{if(!t||typeof t.q!=='string'||!t.q.trim()||!Array.isArray(t.opts)||t.opts.length<2||t.opts.length>4||!t.opts.every(o=>typeof o==='string'&&o.trim())||!Number.isInteger(t.correct)||t.correct<0||t.correct>=t.opts.length||typeof t.why!=='string'||!t.why.trim())throw Error('会話のq/opts/correct/whyを確認してね');return {q:t.q.trim(),opts:t.opts.map(o=>o.trim()),correct:t.correct,why:t.why.trim()}});return {customId:typeof x.customId==='string'&&x.customId.startsWith('user-')?x.customId:uid(),title:x.title.trim(),turns}}
+function importData(raw){const o=JSON.parse(raw);if(!o||typeof o!=='object'||Array.isArray(o)||(!Array.isArray(o.phrases)&&!Array.isArray(o.scenarios)))throw Error('JSONにはphrasesまたはscenariosの配列が必要です');if(o.phrases!==undefined&&!Array.isArray(o.phrases)||o.scenarios!==undefined&&!Array.isArray(o.scenarios))throw Error('phrasesとscenariosは配列にしてね');const ps=(o.phrases||[]).map(validatePhrase),ss=(o.scenarios||[]).map(validateScenario);let np=0,ns=0;for(const x of ps){if(!addedP.some(a=>a.id===x.id)){addedP.push(x);np++}}for(const x of ss){if(!addedS.some(a=>a.customId===x.customId)){addedS.push(x);ns++}}persist();sync();return `フレーズ${np}件、会話${ns}件を追加したよ。`}
+function resetPhrase(){editId=null;['mKr','mKana','mJp','mWords'].forEach(k=>el(k).value='');el('mSavePhrase').textContent='フレーズを保存';el('mCancelPhrase').classList.add('hidden')}
+el('mSavePhrase').onclick=()=>{try{const x=validatePhrase({id:editId||uid(),cat:el('mCat').value,kr:el('mKr').value,kana:el('mKana').value,jp:el('mJp').value,words:wordsFromText(el('mWords').value)});if(editId){const i=addedP.findIndex(p=>p.id===editId);if(i>=0)addedP[i]=x}else addedP.push(x);persist();sync();resetPhrase();alert('フレーズを保存したよ！')}catch(e){alert(e.message)}};
+el('mCancelPhrase').onclick=resetPhrase;
+function clearTurnFields(){['mQuestion','mOptions','mWhy'].forEach(k=>el(k).value='');el('mCorrect').value='0'}
+function readTurn(){const q=el('mQuestion').value.trim(),opts=el('mOptions').value.split('\n').map(x=>x.trim()).filter(Boolean),correct=Number(el('mCorrect').value),why=el('mWhy').value.trim();const validated=validateScenario({title:'一時保存',turns:[{q,opts,correct,why}]});return validated.turns[0]}
+el('mAddTurn').onclick=()=>{try{draftTurns.push(readTurn());clearTurnFields();el('mTurnCount').textContent=draftTurns.length+'件のやり取りを追加済み'}catch(e){alert(e.message)}};
+function resetDialogue(){draftTurns=[];editScenarioId=null;['mTitle','mQuestion','mOptions','mWhy'].forEach(k=>el(k).value='');el('mTurnCount').textContent='0件のやり取り';el('mSaveDialogue').textContent='会話全体を保存'}
+el('mResetDialogue').onclick=resetDialogue;
+el('mSaveDialogue').onclick=()=>{try{const turns=[...draftTurns];if(el('mQuestion').value.trim()||el('mOptions').value.trim())turns.push(readTurn());const x=validateScenario({customId:editScenarioId||uid(),title:el('mTitle').value,turns});if(editScenarioId){const i=addedS.findIndex(a=>a.customId===editScenarioId);if(i>=0)addedS[i]=x}else addedS.push(x);persist();sync();resetDialogue();alert('会話練習を保存したよ！')}catch(e){alert(e.message)}};
+el('mImport').onclick=()=>{try{alert(importData(el('mJson').value));el('mJson').value=''}catch(e){alert('取り込みできませんでした：'+e.message)}};
+el('mExport').onclick=()=>{const blob=new Blob([JSON.stringify({phrases:addedP,scenarios:addedS},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='korean-travel-buddy-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)};
+el('mFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{alert(importData(await f.text()))}catch(err){alert('読み込みできませんでした：'+err.message)}e.target.value=''};
+function addText(parent,tag,value,cls){const n=document.createElement(tag);n.textContent=value;if(cls)n.className=cls;parent.appendChild(n);return n}
+function addButton(parent,label,fn){const b=addText(parent,'button',label,'btn ghost');b.onclick=fn;return b}
+function renderItems(){const target=el('mItems');target.replaceChildren();if(!addedP.length&&!addedS.length){addText(target,'p','まだ追加教材はありません。','small');return}
+ for(const x of addedP){const box=document.createElement('div');box.className='manage-item';addText(box,'strong',x.kr);addText(box,'p',x.jp);const row=document.createElement('div');row.className='actions';addButton(row,'編集',()=>{editId=x.id;el('mCat').value=x.cat;el('mKr').value=x.kr;el('mKana').value=x.kana;el('mJp').value=x.jp;el('mWords').value=x.words.map(w=>w.join('＝')).join('\n');el('mSavePhrase').textContent='変更を保存';el('mCancelPhrase').classList.remove('hidden');switchTab('phrases');window.scrollTo(0,0)});addButton(row,'削除',()=>{if(!confirm('このフレーズを削除しますか？'))return;addedP=addedP.filter(p=>p.id!==x.id);saved=saved.filter(id=>id!==x.id);localStorage.setItem('savedKorean',JSON.stringify(saved));persist();sync()});box.appendChild(row);target.appendChild(box)}
+ for(const x of addedS){const box=document.createElement('div');box.className='manage-item';addText(box,'strong',x.title);addText(box,'p',x.turns.length+'件のやり取り');const row=document.createElement('div');row.className='actions';addButton(row,'編集',()=>{editScenarioId=x.customId;draftTurns=x.turns.map(t=>({...t,opts:[...t.opts]}));el('mTitle').value=x.title;clearTurnFields();el('mTurnCount').textContent=draftTurns.length+'件のやり取りを編集用に読み込み済み';el('mSaveDialogue').textContent='変更を保存';switchTab('dialogues');window.scrollTo(0,0)});addButton(row,'削除',()=>{if(!confirm('この会話を削除しますか？'))return;addedS=addedS.filter(a=>a.customId!==x.customId);persist();sync()});box.appendChild(row);target.appendChild(box)}
+}
+function switchTab(name){document.querySelectorAll('[data-mtab]').forEach(b=>b.classList.toggle('active',b.dataset.mtab===name));document.querySelectorAll('.m-panel').forEach(p=>p.classList.toggle('hidden',p.id!=='m-'+name))}
+document.querySelectorAll('[data-mtab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.mtab));
+sync();
+})();
 </script>
 </body></html>
